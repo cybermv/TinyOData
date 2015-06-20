@@ -18,18 +18,25 @@
         public static ODataQuery Build(Type entityType, QueryString queryString)
         {
             Type queryType = typeof(ODataQuery<>).MakeGenericType(entityType);
-            ODataQuery query = (ODataQuery)Activator.CreateInstance(queryType);
+            ODataQuery odataQuery = (ODataQuery)Activator.CreateInstance(queryType);
+            odataQuery.Construct(queryString);
 
             // TODO filter
 
-            // TODO orderby
+            if (queryString.OrderBy != null)
+            {
+                Type orderByType = typeof(ODataOrderByQuery<>).MakeGenericType(entityType);
+                ODataOrderByQuery orderBy = (ODataOrderByQuery)Activator.CreateInstance(orderByType);
+                orderBy.Construct(entityType, queryString.OrderByQuery);
+                odataQuery.OrderBy = orderBy;
+            }
 
             if (queryString.Skip != null)
             {
                 Type skipQueryType = typeof(ODataSkipQuery<>).MakeGenericType(entityType);
                 ODataSkipQuery skip = (ODataSkipQuery)Activator.CreateInstance(skipQueryType);
                 skip.Construct(entityType, queryString.SkipQuery);
-                query.Skip = skip;
+                odataQuery.Skip = skip;
             }
 
             if (queryString.Top != null)
@@ -37,12 +44,12 @@
                 Type topQueryType = typeof(ODataTopQuery<>).MakeGenericType(entityType);
                 ODataTopQuery top = (ODataTopQuery)Activator.CreateInstance(topQueryType);
                 top.Construct(entityType, queryString.TopQuery);
-                query.Top = top;
+                odataQuery.Top = top;
             }
 
             // TODO select
 
-            return query;
+            return odataQuery;
         }
     }
 }

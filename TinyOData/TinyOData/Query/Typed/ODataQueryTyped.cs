@@ -21,7 +21,11 @@
         {
             // 1. Filter TODO
 
-            // 2. OrderBy TODO
+            // 2. OrderBy
+            if (this.OrderBy != null)
+            {
+                query = this.OrderBy.ApplyTo(query);
+            }
 
             // 3. Skip
             if (this.Skip != null)
@@ -44,7 +48,7 @@
         /// </summary>
         /// <param name="query">The query</param>
         /// <returns>The resulting query</returns>
-        public IQueryable<dynamic> ApplyWithSelect(IQueryable<TEntity> query)
+        public IQueryable<dynamic> ApplyWithSelectTo(IQueryable<TEntity> query)
         {
             query = this.ApplyTo(query);
 
@@ -52,6 +56,11 @@
 
             return query;
         }
+
+        /// <summary>
+        /// Gets the $orderby part of the OData query
+        /// </summary>
+        public new ODataOrderByQuery<TEntity> OrderBy { get { return base.OrderBy as ODataOrderByQuery<TEntity>; } }
 
         /// <summary>
         /// Gets the $skip part of the OData query

@@ -9,7 +9,7 @@
     /// <summary>
     /// The parsed $skip query
     /// </summary>
-    public class ODataSkipQuery : IODataRawQuery
+    public abstract class ODataSkipQuery : IODataRawQuery
     {
         #region Private fields
 
@@ -70,6 +70,11 @@
 
         #region Private methods
 
+        /// <summary>
+        /// Extracts the skip number from the query string segment
+        /// </summary>
+        /// <param name="skipQueryString">The query string segment</param>
+        /// <returns>The extracted skip number</returns>
         private int? ExtractSkipCount(string skipQueryString)
         {
             string[] segments = skipQueryString.Split(QueryString.KeyValueDelimiter);

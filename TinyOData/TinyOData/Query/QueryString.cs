@@ -34,15 +34,6 @@
         internal QueryString(Uri uriToParse)
         {
             _stringDictionary = new StringDictionary();
-            ParseUri(uriToParse);
-        }
-
-        #endregion Constructor
-
-        #region Private methods
-
-        private void ParseUri(Uri uriToParse)
-        {
             NameValueCollection rawParsedPairs = uriToParse.ParseQueryString();
 
             foreach (string key in rawParsedPairs)
@@ -52,7 +43,7 @@
             }
         }
 
-        #endregion Private methods
+        #endregion Constructor
 
         #region Indexer
 

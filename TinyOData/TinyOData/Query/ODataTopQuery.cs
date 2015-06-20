@@ -9,7 +9,7 @@
     /// <summary>
     /// The parsed $top query
     /// </summary>
-    public class ODataTopQuery : IODataRawQuery
+    public abstract class ODataTopQuery : IODataRawQuery
     {
         #region Private fields
 
@@ -70,6 +70,11 @@
 
         #region Private methods
 
+        /// <summary>
+        /// Extracts the top number from the query string segment
+        /// </summary>
+        /// <param name="topQueryString">The query string segment</param>
+        /// <returns>The extracted top number</returns>
         private int? ExtractTopCount(string topQueryString)
         {
             string[] segments = topQueryString.Split(QueryString.KeyValueDelimiter);

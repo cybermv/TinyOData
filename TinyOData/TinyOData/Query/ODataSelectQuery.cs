@@ -2,10 +2,7 @@
 {
     using Interfaces;
 
-    /// <summary>
-    /// The parsed $filter query
-    /// </summary>
-    public abstract class ODataFilterQuery : IODataRawQuery
+    public abstract class ODataSelectQuery : IODataRawQuery
     {
         public string RawQuery { get { return string.Empty; } }
     }

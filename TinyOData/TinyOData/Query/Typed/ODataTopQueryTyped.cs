@@ -1,12 +1,13 @@
 ﻿namespace TinyOData.Query.Typed
 {
+    using Interfaces;
     using System.Linq;
 
     /// <summary>
     /// The typed class that is used to apply the $top query to the <see cref="IQueryable{TEntity}"/>
     /// </summary>
     /// <typeparam name="TEntity">Type of the entity</typeparam>
-    public class ODataTopQuery<TEntity> : ODataTopQuery
+    public class ODataTopQuery<TEntity> : ODataTopQuery, IAppliableQuery<TEntity>
         where TEntity : class, new()
     {
         /// <summary>

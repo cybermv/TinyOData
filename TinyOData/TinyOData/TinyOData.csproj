@@ -50,6 +50,12 @@
     <Compile Include="Attributes\ParseODataQueryAttribute.cs" />
     <Compile Include="Exceptions\TinyODataApplyException.cs" />
     <Compile Include="Extensions\QueryStringExtensions.cs" />
+    <Compile Include="Query\Interfaces\IAppliableQuery.cs" />
+    <Compile Include="Query\Interfaces\ISelectableQuery.cs" />
+    <Compile Include="Query\ODataOrderByQuery.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Query\ODataSelectQuery.cs" />
     <Compile Include="Query\QueryBuilder.cs" />
     <Compile Include="Query\Interfaces\IODataQuery.cs" />
     <Compile Include="Query\Interfaces\IODataRawQuery.cs" />
@@ -61,8 +67,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\ODataFilterQuery.cs" />
     <Compile Include="Query\ODataQuery.cs" />
+    <Compile Include="Query\Typed\ODataOrderByQueryTyped.cs" />
     <Compile Include="Query\Typed\ODataQueryTyped.cs" />
-    <Compile Include="Query\ODataOrderByQuery.cs" />
     <Compile Include="Query\ODataTopQuery.cs" />
     <Compile Include="Query\Typed\ODataSkipQueryTyped.cs">
       <SubType>Code</SubType>
