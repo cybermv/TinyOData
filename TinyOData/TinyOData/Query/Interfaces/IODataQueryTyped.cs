@@ -1,7 +1,7 @@
-﻿using System.Linq;
-
-namespace TinyOData.Query
+﻿namespace TinyOData.Query.Interfaces
 {
+    using System.Linq;
+
     /// <summary>
     /// Interface that defines the actions an OData query can perform
     /// </summary>

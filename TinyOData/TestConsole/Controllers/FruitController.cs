@@ -2,43 +2,23 @@
 {
     using DAL;
     using System;
+    using System.Collections.Generic;
     using System.Linq;
-    using System.Linq.Expressions;
     using System.Web.Http;
-    using TinyOData.Query;
+    using TinyOData.Query.Typed;
 
     public class FruitController : ApiController
     {
         [Route("api/fruit")]
         public IHttpActionResult Get(ODataQuery<Fruit> query)
         {
-            ConstantExpression numThree = Expression.Constant(5m);
+            IQueryable<Fruit> fruits = Fruit.Query;
 
-            ParameterExpression param = Expression.Parameter(typeof(Fruit), "fruit");
-            MemberExpression fruitWeight = Expression.Property(param, "Weight");
+            fruits = query.ApplyTo(fruits);
 
-            BinaryExpression isFruitWeightGreaterThanNumThree = Expression.GreaterThan(fruitWeight, numThree);
+            List<Fruit> queriedFruits = fruits.ToList();
 
-            LambdaExpression lambdaForHeavyFruits = Expression.Lambda(isFruitWeightGreaterThanNumThree, param);
-
-            MethodCallExpression filterFruits = Expression.Call(
-                typeof(Queryable),
-                "Where",
-                new Type[] { param.Type },
-                Fruit.Query.Expression,
-                lambdaForHeavyFruits);
-
-            IQueryable queryable = Fruit.Query.Provider.CreateQuery(filterFruits);
-
-            IQueryable<Fruit> fruitsFiltered = queryable as IQueryable<Fruit>;
-
-            Fruit[] array = fruitsFiltered.ToArray();
-
-            IQueryable<Fruit> fruits = Fruit.Query.Take(15);
-
-            IQueryable<Fruit> appliedQuery = query.ApplyTo(Fruit.Query);
-
-            return Ok();
+            return Ok(queriedFruits);
         }
 
         [Route("api/dyn")]

@@ -1,7 +1,8 @@
 ﻿namespace TinyOData.Attributes
 {
-    using Parsing;
+    using Extensions;
     using Query;
+    using Query.Interfaces;
     using System;
     using System.Linq;
     using System.Web.Http.Controllers;
@@ -36,7 +37,7 @@
 
         /// <summary>
         /// Extracts the entity type and query string key-value pairs and passes it to the
-        /// <see cref="QueryParser"/>. Sets the resulting query as the action parameter
+        /// <see cref="QueryBuilder"/>. Sets the resulting query as the action parameter
         /// to the given <see cref="HttpActionContext"/>
         /// </summary>
         /// <param name="actionContext">The current action context</param>
@@ -47,9 +48,9 @@
 
             Type entityType = parameter.ParameterType.GetGenericArguments().Single();
 
-            QueryString queryString = QueryString.ParseODataQueryString(actionContext.Request.RequestUri);
+            QueryString queryString = actionContext.Request.ParseODataQueryString();
 
-            ODataQuery parsedQuery = QueryParser.ParseQueryFor(entityType, queryString);
+            ODataQuery parsedQuery = QueryBuilder.Build(entityType, queryString);
 
             actionContext.ActionArguments[parameter.ParameterName] = parsedQuery;
         }

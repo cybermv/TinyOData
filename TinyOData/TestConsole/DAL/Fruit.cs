@@ -19,7 +19,7 @@
             yield return new Fruit { Id = 2, Name = "Jagoda", Weight = 0.95m };
             yield return new Fruit { Id = 3, Name = "Šljiva", Weight = 3.3m };
             yield return new Fruit { Id = 4, Name = "Trešnja", Weight = 8.52m };
-            yield return new Fruit { Id = 5, Name = "Jabuka", Weight = 22.1m };
+            yield return new Fruit { Id = 5, Name = "Višnja", Weight = 22.1m };
             yield return new Fruit { Id = 6, Name = "Kivi", Weight = 15m };
         }
     }

@@ -48,18 +48,29 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\ParseODataQueryAttribute.cs" />
-    <Compile Include="Parsing\QueryParser.cs" />
-    <Compile Include="Query\IODataQueryTyped.cs" />
+    <Compile Include="Exceptions\TinyODataApplyException.cs" />
+    <Compile Include="Extensions\QueryStringExtensions.cs" />
+    <Compile Include="Query\QueryBuilder.cs" />
+    <Compile Include="Query\Interfaces\IODataQuery.cs" />
+    <Compile Include="Query\Interfaces\IODataRawQuery.cs" />
+    <Compile Include="Query\Interfaces\IODataQueryTyped.cs" />
+    <Compile Include="Query\ODataSkipQuery.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Query\QueryString.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Query\FilterODataQuery.cs" />
-    <Compile Include="Query\IODataQuery.cs" />
+    <Compile Include="Query\ODataFilterQuery.cs" />
     <Compile Include="Query\ODataQuery.cs" />
-    <Compile Include="Query\ODataQueryTyped.cs" />
-    <Compile Include="Query\OrderByODataQuery.cs" />
-    <Compile Include="Query\RawODataQuery.cs" />
-    <Compile Include="Query\SkipODataQuery.cs" />
-    <Compile Include="Query\TopODataQuery.cs" />
+    <Compile Include="Query\Typed\ODataQueryTyped.cs" />
+    <Compile Include="Query\ODataOrderByQuery.cs" />
+    <Compile Include="Query\ODataTopQuery.cs" />
+    <Compile Include="Query\Typed\ODataSkipQueryTyped.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Query\Typed\ODataTopQueryTyped.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="TestClass.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
