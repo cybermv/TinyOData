@@ -1,83 +1,39 @@
 ﻿namespace TinyOData.Query
 {
-    using Exceptions;
     using Interfaces;
-    using System;
     using System.Linq;
     using System.Linq.Expressions;
 
     /// <summary>
-    /// The parsed $top query
+    /// The typed class that is used to apply the $top query to the <see cref="IQueryable{TEntity}"/>
     /// </summary>
-    public abstract class ODataTopQuery : IODataRawQuery
+    /// <typeparam name="TEntity">Type of the entity</typeparam>
+    public class ODataTopQuery<TEntity> : ODataBaseQuery, IAppliableQuery<TEntity>
+        where TEntity : class, new()
     {
-        #region Private fields
-
-        private Type _entityType;
-        private int? _topCount;
-        private string _rawQuery;
         private Expression _topExpr;
 
-        #endregion Private fields
+        public int? TopCount { get; private set; }
 
-        #region Constructor
-
-        internal ODataTopQuery()
+        internal ODataTopQuery(QueryString queryString)
         {
-        }
-
-        #endregion Constructor
-
-        #region Public properties
-
-        public string RawQuery { get { return this._rawQuery; } }
-
-        public int? TopCount { get { return this._topCount; } }
-
-        #endregion Public properties
-
-        #region Internal methods
-
-        internal void Construct(Type entityType, string topQueryString)
-        {
-            this._entityType = entityType;
-            this._rawQuery = topQueryString;
-            this._topCount = ExtractTopCount(topQueryString);
-            if (this._topCount.HasValue)
+            this.RawQuery = queryString.TopQuery;
+            this.IsValid = false;
+            this.EntityType = typeof(TEntity);
+            this.TopCount = ExtractTopCount();
+            if (this.IsValid)
             {
-                this._topExpr = Expression.Constant(this._topCount.Value, typeof(int));
+                this._topExpr = Expression.Constant(this.TopCount.Value, typeof(int));
             }
         }
-
-        internal IQueryable Apply(IQueryable query)
-        {
-            if (query.GetType().GetGenericArguments().Single() != this._entityType)
-            {
-                throw new TinyODataApplyException("PORUKA da nije dobrog tipa iqueryable"); // TODO
-            }
-
-            MethodCallExpression topExpression = Expression.Call(
-                typeof(Queryable),
-                "Take",
-                new[] { this._entityType },
-                query.Expression,
-                this._topExpr);
-
-            return query.Provider.CreateQuery(topExpression);
-        }
-
-        #endregion Internal methods
-
-        #region Private methods
 
         /// <summary>
         /// Extracts the top number from the query string segment
         /// </summary>
-        /// <param name="topQueryString">The query string segment</param>
         /// <returns>The extracted top number</returns>
-        private int? ExtractTopCount(string topQueryString)
+        private int? ExtractTopCount()
         {
-            string[] segments = topQueryString.Split(QueryString.KeyValueDelimiter);
+            string[] segments = this.RawQuery.Split(QueryString.KeyValueDelimiter);
 
             if (segments.Length != 2)
             {
@@ -87,11 +43,45 @@
             int top;
             if (int.TryParse(segments[1].Trim(), out top))
             {
+                this.IsValid = true;
                 return top;
             }
             return null;
         }
 
-        #endregion Private methods
+        /// <summary>
+        /// The interal method that creates the expression and appends it to the given query
+        /// </summary>
+        /// <param name="query">The query</param>
+        /// <returns>The modified query</returns>
+        private IQueryable<TEntity> ApplyInternal(IQueryable<TEntity> query)
+        {
+            MethodCallExpression topExpression = Expression.Call(
+                typeof(Queryable),
+                "Take",
+                new[] { this.EntityType },
+                query.Expression,
+                this._topExpr);
+
+            return query.Provider.CreateQuery(topExpression) as IQueryable<TEntity>;
+        }
+
+        #region IAppliableQuery
+
+        /// <summary>
+        /// Applies the $top query to the given <see cref="IQueryable{TEntity}"/>
+        /// </summary>
+        /// <param name="query">The query</param>
+        /// <returns>The modified query</returns>
+        public IQueryable<TEntity> ApplyTo(IQueryable<TEntity> query)
+        {
+            if (this.IsValid)
+            {
+                query = ApplyInternal(query);
+            }
+            return query;
+        }
+
+        #endregion IAppliableQuery
     }
 }

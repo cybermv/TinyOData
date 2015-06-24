@@ -20,7 +20,7 @@
         {
             if (NeedsQuery(actionContext))
             {
-                ParseAndSetQueryOptions(actionContext);
+                CreateQueryOptions(actionContext);
             }
         }
 
@@ -36,21 +36,19 @@
         }
 
         /// <summary>
-        /// Extracts the entity type and query string key-value pairs and passes it to the
-        /// <see cref="QueryBuilder"/>. Sets the resulting query as the action parameter
-        /// to the given <see cref="HttpActionContext"/>
+        /// Uses the <see cref="HttpRequestMessageExtensions"/> class to build a
+        /// query and sets the resulting query as the action parameter to
+        /// the given <see cref="HttpActionContext"/>
         /// </summary>
         /// <param name="actionContext">The current action context</param>
-        private void ParseAndSetQueryOptions(HttpActionContext actionContext)
+        private void CreateQueryOptions(HttpActionContext actionContext)
         {
             HttpParameterDescriptor parameter = actionContext.ActionDescriptor.GetParameters()
                 .Single(p => p.ParameterType.GetInterfaces().Contains(typeof(IODataQuery)));
 
             Type entityType = parameter.ParameterType.GetGenericArguments().Single();
 
-            QueryString queryString = actionContext.Request.ParseODataQueryString();
-
-            ODataQuery parsedQuery = QueryBuilder.Build(entityType, queryString);
+            IODataQuery parsedQuery = actionContext.Request.BuildODataQuery(entityType);
 
             actionContext.ActionArguments[parameter.ParameterName] = parsedQuery;
         }

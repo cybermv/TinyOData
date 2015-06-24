@@ -2,35 +2,107 @@
 {
     using Interfaces;
     using System.Linq;
-    using Typed;
 
     /// <summary>
-    /// Class that is used underneath the <see cref="ODataQuery{TEntity}"/> class
-    /// It operates on the untyped <see cref="IQueryable"/> interface
+    /// Class that represents the query that the user will recieve and use to apply the query
+    /// options on the given <see cref="IQueryable{TEntity}"/>
     /// </summary>
-    public abstract class ODataQuery : IODataQuery
+    /// <typeparam name="TEntity">Type of the entity from the query</typeparam>
+    public class ODataQuery<TEntity> : IODataQuery<TEntity>
+        where TEntity : class, new()
     {
-        internal ODataQuery()
-        {
-        }
-
-        public QueryString QueryString { get; private set; }
-
         /// <summary>
-        /// Sets the <see cref="QueryString"/> instance to this query
+        /// Creates a new <see cref="ODataQuery{TEntity}"/> instance from a query string
+        /// and a given entity type. After creation it can be used to apply a query
+        /// to a given <see cref="IQueryable{TEntity}"/>
         /// </summary>
         /// <param name="queryString">The query string</param>
-        public void Construct(QueryString queryString)
+        public ODataQuery(QueryString queryString)
         {
-            this.QueryString = queryString;
+            this.Filter = new ODataFilterQuery<TEntity>();
+            this.OrderBy = new ODataOrderByQuery<TEntity>(queryString);
+            this.Skip = new ODataSkipQuery<TEntity>(queryString);
+            this.Top = new ODataTopQuery<TEntity>(queryString);
+            this.Select = new ODataSelectQuery<TEntity>();
         }
 
-        internal ODataTopQuery Top { get; set; }
+        /// <summary>
+        /// Applies the $filter, $orderby, $skip and $top OData queries to
+        /// the given <see cref="IQueryable{TEntity}"/>
+        /// </summary>
+        /// <param name="query">The query</param>
+        /// <returns>The resulting query</returns>
+        public IQueryable<TEntity> ApplyTo(IQueryable<TEntity> query)
+        {
+            // 1. Filter
+            if (this.Filter != null)
+            {
+                query = this.Filter.ApplyTo(query);
+            }
 
-        internal ODataSkipQuery Skip { get; set; }
+            // 2. OrderBy
+            if (this.OrderBy != null)
+            {
+                query = this.OrderBy.ApplyTo(query);
+            }
 
-        internal ODataOrderByQuery OrderBy { get; set; }
+            // 3. Skip
+            if (this.Skip != null)
+            {
+                query = this.Skip.ApplyTo(query);
+            }
 
-        internal ODataFilterQuery Filter { get; set; }
+            // 4. Top
+            if (this.Top != null)
+            {
+                query = this.Top.ApplyTo(query);
+            }
+
+            return query;
+        }
+
+        /// <summary>
+        /// Applies the $filter, $orderby, $skip, $top and $select OData queries to
+        /// the given <see cref="IQueryable{TEntity}"/>
+        /// </summary>
+        /// <param name="query">The query</param>
+        /// <returns>The resulting query</returns>
+        public IQueryable<dynamic> ApplyToAsDynamic(IQueryable<TEntity> query)
+        {
+            query = this.ApplyTo(query);
+
+            // 5. Select
+            if (this.Select != null)
+            {
+                return this.Select.ApplyToAsDynamic(query);
+            }
+
+            return query;
+        }
+
+        /// <summary>
+        /// Gets the $filter part of the OData query
+        /// </summary>
+        public ODataFilterQuery<TEntity> Filter { get; private set; }
+
+        /// <summary>
+        /// Gets the $orderby part of the OData query
+        /// </summary>
+        public ODataOrderByQuery<TEntity> OrderBy { get; private set; }
+
+        /// <summary>
+        /// Gets the $skip part of the OData query
+        /// </summary>
+        public ODataSkipQuery<TEntity> Skip { get; private set; }
+
+        /// <summary>
+        /// Gets the $top part of the OData query
+        /// </summary>
+        public ODataTopQuery<TEntity> Top { get; private set; }
+
+        /// <summary>
+        /// Gets the $select part of the OData query
+        /// </summary>
+        public ODataSelectQuery<TEntity> Select { get; private set; }
     }
 }

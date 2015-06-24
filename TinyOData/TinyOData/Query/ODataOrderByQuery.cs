@@ -7,47 +7,34 @@
     using System.Linq.Expressions;
 
     /// <summary>
-    /// The parsed $orderby query
+    /// The typed class that is used to apply the order by query to the <see cref="IQueryable{TEntity}"/>
     /// </summary>
-    public abstract class ODataOrderByQuery : IODataRawQuery
+    /// <typeparam name="TEntity">Type of the entity</typeparam>
+    public class ODataOrderByQuery<TEntity> : ODataBaseQuery, IAppliableQuery<TEntity>
+        where TEntity : class, new()
     {
-        #region Private fields
-
-        private Type _entityType;
-        private string _rawQuery;
         private List<OrderByPropertyDirectionPair> _orderByPropertiesList;
 
-        #endregion Private fields
-
-        #region Constructor
-
-        internal ODataOrderByQuery()
+        internal ODataOrderByQuery(QueryString queryString)
         {
+            this.EntityType = typeof(TEntity);
+            this.RawQuery = queryString.OrderByQuery;
+            this._orderByPropertiesList = ExtractOrderByProperties(queryString.OrderByQuery);
         }
 
-        #endregion Constructor
-
-        #region Public properties
-
-        public string RawQuery { get { return this._rawQuery; } }
-
-        #endregion Public properties
-
-        #region Internal methods
-
-        internal void Construct(Type entityType, string orderByQueryString)
-        {
-            this._entityType = entityType;
-            this._rawQuery = orderByQueryString;
-            this._orderByPropertiesList = ExtractOrderByProperties(orderByQueryString);
-        }
-
-        internal IQueryable Apply(IQueryable query)
+        /// <summary>
+        /// The interal method that creates the expression and appends it to the given query
+        /// </summary>
+        /// <param name="query">The query</param>
+        /// <returns>The modified query</returns>
+        private IQueryable<TEntity> ApplyInternal(IQueryable<TEntity> query)
         {
             if (this._orderByPropertiesList.Count == 0)
             {
                 return query;
             }
+
+            IQueryable queryToReturn = query;
 
             OrderByPropertyDirectionPair firstOrderBy = this._orderByPropertiesList.First();
             Expression orderByLambda = BuildPropertySelectorLambda(firstOrderBy.PropertyName);
@@ -57,11 +44,11 @@
             MethodCallExpression orderBy = Expression.Call(
                 typeof(Queryable),
                 orderingFunctionName,
-                new[] { this._entityType, entityPropertyType },
-                query.Expression,
+                new[] { this.EntityType, entityPropertyType },
+                queryToReturn.Expression,
                 orderByLambda);
 
-            query = query.Provider.CreateQuery(orderBy);
+            queryToReturn = queryToReturn.Provider.CreateQuery(orderBy);
 
             if (this._orderByPropertiesList.Count > 1)
             {
@@ -75,20 +62,16 @@
                     orderBy = Expression.Call(
                         typeof(Queryable),
                         orderingFunctionName,
-                        new[] { this._entityType, entityPropertyType },
-                        query.Expression,
+                        new[] { this.EntityType, entityPropertyType },
+                        queryToReturn.Expression,
                         orderByLambda);
 
-                    query = query.Provider.CreateQuery(orderBy);
+                    queryToReturn = queryToReturn.Provider.CreateQuery(orderBy);
                 }
             }
 
-            return query;
+            return queryToReturn as IQueryable<TEntity>;
         }
-
-        #endregion Internal methods
-
-        #region Private methods
 
         /// <summary>
         /// Parses the $orderby query string section and returns a list of properies
@@ -132,8 +115,14 @@
                         list.Add(new OrderByPropertyDirectionPair(parts[0], OrderByPropertyDirectionPair.OrderByDirection.Descending));
                     }
                 }
+                else
+                {
+                    this.IsValid = false;
+                    return null;
+                }
             }
 
+            this.IsValid = true;
             return list;
         }
 
@@ -144,7 +133,7 @@
         private List<string> GetSupportedOrderingProperties()
         {
             // allow ordering by public properties that are either primitive or value types or string
-            return this._entityType.GetProperties()
+            return this.EntityType.GetProperties()
                 .Where(p => p.PropertyType.IsPublic &&
                             (p.PropertyType.IsValueType ||
                              p.PropertyType.IsPrimitive ||
@@ -160,7 +149,7 @@
         /// <returns>The lambda expression that selects the given property of the entity</returns>
         private Expression BuildPropertySelectorLambda(string propertyName)
         {
-            ParameterExpression entity = Expression.Parameter(this._entityType, "entity");
+            ParameterExpression entity = Expression.Parameter(this.EntityType, "entity");
 
             MemberExpression firstPropertyToOrder = Expression.Property(entity, propertyName);
 
@@ -174,7 +163,7 @@
         /// <returns>Type of the given property</returns>
         private Type GetEntityPropertyType(string propName)
         {
-            return this._entityType.GetProperty(propName).PropertyType;
+            return this.EntityType.GetProperty(propName).PropertyType;
         }
 
         /// <summary>
@@ -204,10 +193,6 @@
             }
         }
 
-        #endregion Private methods
-
-        #region Private classes
-
         /// <summary>
         /// Struct which represents a single ordering pair - the name of the property and the ordering direction
         /// </summary>
@@ -230,6 +215,22 @@
             }
         }
 
-        #endregion Private classes
+        #region IAppliableQuery
+
+        /// <summary>
+        /// Applies the order by query to the given <see cref="IQueryable{TEntity}"/>
+        /// </summary>
+        /// <param name="query">The query</param>
+        /// <returns>The modified query</returns>
+        public IQueryable<TEntity> ApplyTo(IQueryable<TEntity> query)
+        {
+            if (this.IsValid)
+            {
+                query = ApplyInternal(query);
+            }
+            return query;
+        }
+
+        #endregion IAppliableQuery
     }
 }

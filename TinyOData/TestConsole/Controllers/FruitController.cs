@@ -5,7 +5,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Web.Http;
-    using TinyOData.Query.Typed;
+    using TinyOData.Query;
 
     public class FruitController : ApiController
     {
@@ -22,7 +22,7 @@
         }
 
         [Route("api/dyn")]
-        public IHttpActionResult Get()
+        public IHttpActionResult Get(object obj)
         {
             dynamic dyn = new
             {

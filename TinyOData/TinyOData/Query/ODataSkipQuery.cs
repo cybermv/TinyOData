@@ -1,83 +1,39 @@
 ﻿namespace TinyOData.Query
 {
-    using Exceptions;
     using Interfaces;
-    using System;
     using System.Linq;
     using System.Linq.Expressions;
 
     /// <summary>
-    /// The parsed $skip query
+    /// The typed class that is used to apply the skip query to the <see cref="IQueryable{TEntity}"/>
     /// </summary>
-    public abstract class ODataSkipQuery : IODataRawQuery
+    /// <typeparam name="TEntity">Type of the entity</typeparam>
+    public class ODataSkipQuery<TEntity> : ODataBaseQuery, IAppliableQuery<TEntity>
+        where TEntity : class, new()
     {
-        #region Private fields
-
-        private Type _entityType;
-        private int? _skipCount;
-        private string _rawQuery;
         private Expression _skipExpr;
 
-        #endregion Private fields
+        public int? SkipCount { get; private set; }
 
-        #region Constructor
-
-        internal ODataSkipQuery()
+        internal ODataSkipQuery(QueryString queryString)
         {
-        }
-
-        #endregion Constructor
-
-        #region Public properties
-
-        public string RawQuery { get { return this._rawQuery; } }
-
-        public int? SkipCount { get { return this._skipCount; } }
-
-        #endregion Public properties
-
-        #region Internal methods
-
-        internal void Construct(Type entityType, string skipQueryString)
-        {
-            this._entityType = entityType;
-            this._rawQuery = skipQueryString;
-            this._skipCount = ExtractSkipCount(skipQueryString);
-            if (this._skipCount.HasValue)
+            this.RawQuery = queryString.SkipQuery;
+            this.IsValid = false;
+            this.EntityType = typeof(TEntity);
+            this.SkipCount = ExtractSkipCount();
+            if (this.IsValid)
             {
-                this._skipExpr = Expression.Constant(this._skipCount.Value, typeof(int));
+                this._skipExpr = Expression.Constant(this.SkipCount.Value, typeof(int));
             }
         }
-
-        internal IQueryable Apply(IQueryable query)
-        {
-            if (query.GetType().GetGenericArguments().Single() != this._entityType)
-            {
-                throw new TinyODataApplyException("PORUKA da nije dobrog tipa iqueryable"); // TODO
-            }
-
-            MethodCallExpression skipExpression = Expression.Call(
-                typeof(Queryable),
-                "Skip",
-                new[] { this._entityType },
-                query.Expression,
-                this._skipExpr);
-
-            return query.Provider.CreateQuery(skipExpression);
-        }
-
-        #endregion Internal methods
-
-        #region Private methods
 
         /// <summary>
-        /// Extracts the skip number from the query string segment
+        /// Extracts the top number from the query string segment
         /// </summary>
-        /// <param name="skipQueryString">The query string segment</param>
-        /// <returns>The extracted skip number</returns>
-        private int? ExtractSkipCount(string skipQueryString)
+        /// <returns>The extracted top number</returns>
+        private int? ExtractSkipCount()
         {
-            string[] segments = skipQueryString.Split(QueryString.KeyValueDelimiter);
+            string[] segments = this.RawQuery.Split(QueryString.KeyValueDelimiter);
 
             if (segments.Length != 2)
             {
@@ -87,11 +43,45 @@
             int skip;
             if (int.TryParse(segments[1].Trim(), out skip))
             {
+                this.IsValid = true;
                 return skip;
             }
             return null;
         }
 
-        #endregion Private methods
+        /// <summary>
+        /// The interal method that creates the expression and appends it to the given query
+        /// </summary>
+        /// <param name="query">The query</param>
+        /// <returns>The modified query</returns>
+        private IQueryable<TEntity> ApplyInternal(IQueryable<TEntity> query)
+        {
+            MethodCallExpression topExpression = Expression.Call(
+                typeof(Queryable),
+                "Skip",
+                new[] { this.EntityType },
+                query.Expression,
+                this._skipExpr);
+
+            return query.Provider.CreateQuery(topExpression) as IQueryable<TEntity>;
+        }
+
+        #region IAppliableQuery
+
+        /// <summary>
+        /// Applies the $top query to the given <see cref="IQueryable{TEntity}"/>
+        /// </summary>
+        /// <param name="query">The query</param>
+        /// <returns>The modified query</returns>
+        public IQueryable<TEntity> ApplyTo(IQueryable<TEntity> query)
+        {
+            if (this.IsValid)
+            {
+                query = ApplyInternal(query);
+            }
+            return query;
+        }
+
+        #endregion IAppliableQuery
     }
 }
