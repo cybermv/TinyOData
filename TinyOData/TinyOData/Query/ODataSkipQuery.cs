@@ -41,7 +41,7 @@
             }
 
             int skip;
-            if (int.TryParse(segments[1].Trim(), out skip))
+            if (int.TryParse(segments[1].Trim(), out skip) && skip >= 0)
             {
                 this.IsValid = true;
                 return skip;

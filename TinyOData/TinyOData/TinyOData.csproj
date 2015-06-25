@@ -50,7 +50,7 @@
     <Compile Include="Attributes\ParseODataQueryAttribute.cs" />
     <Compile Include="Exceptions\TinyODataApplyException.cs" />
     <Compile Include="Extensions\HttpRequestMessageExtensions.cs" />
-    <Compile Include="Extensions\QueryStringExtensions.cs" />
+    <Compile Include="Extensions\UriExtensions.cs" />
     <Compile Include="Query\Interfaces\IAppliableQuery.cs" />
     <Compile Include="Query\Interfaces\IDynamicAppliableQuery.cs" />
     <Compile Include="Query\ODataBaseQuery.cs" />

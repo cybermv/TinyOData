@@ -31,7 +31,7 @@
 
         #region Constructor
 
-        internal QueryString(Uri uriToParse)
+        public QueryString(Uri uriToParse)
         {
             _stringDictionary = new StringDictionary();
             NameValueCollection rawParsedPairs = uriToParse.ParseQueryString();

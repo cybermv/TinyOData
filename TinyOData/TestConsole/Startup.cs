@@ -4,6 +4,7 @@ namespace TestConsole
 {
     using Owin;
     using System;
+    using System.Diagnostics;
     using System.Net;
     using System.Web.Http;
     using TinyOData.Attributes;
@@ -12,14 +13,18 @@ namespace TestConsole
     {
         public void Configuration(IAppBuilder app)
         {
-            SetUpWebApi(app);
-
             app.Use(async (ctx, next) =>
             {
                 Console.WriteLine("Request started - {0}", ctx.Request.Uri.AbsolutePath);
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
                 await next();
-                Console.WriteLine("Responded with {0}", ctx.Response.StatusCode);
+                watch.Stop();
+                Console.WriteLine("Responded with {0}, elapsed time: {1} ms", ctx.Response.StatusCode,
+                    watch.ElapsedMilliseconds);
             });
+
+            SetUpWebApi(app);
 
             app.Run(async ctx =>
             {

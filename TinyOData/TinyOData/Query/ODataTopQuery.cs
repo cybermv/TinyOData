@@ -41,7 +41,7 @@
             }
 
             int top;
-            if (int.TryParse(segments[1].Trim(), out top))
+            if (int.TryParse(segments[1].Trim(), out top) && top >= 0)
             {
                 this.IsValid = true;
                 return top;
