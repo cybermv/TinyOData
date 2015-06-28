@@ -19,7 +19,7 @@
 
         public const char ParameterDelimiter = '&';
         public const char KeyValueDelimiter = '=';
-        public const char OrderByDelimiter = ',';
+        public const char PropertyDelimiter = ',';
 
         #endregion Public constants
 
@@ -31,10 +31,23 @@
 
         #region Constructor
 
-        public QueryString(Uri uriToParse)
+        /// <summary>
+        /// Creates a new <see cref="QueryString"/> instance from a string
+        /// </summary>
+        /// <param name="queryString">The string to parse</param>
+        public QueryString(string queryString)
+            : this(new Uri(queryString))
+        {
+        }
+
+        /// <summary>
+        /// Creates a new <see cref="QueryString"/> instance from a <see cref="Uri"/>
+        /// </summary>
+        /// <param name="uri">The <see cref="Uri"/> to parse</param>
+        public QueryString(Uri uri)
         {
             _stringDictionary = new StringDictionary();
-            NameValueCollection rawParsedPairs = uriToParse.ParseQueryString();
+            NameValueCollection rawParsedPairs = uri.ParseQueryString();
 
             foreach (string key in rawParsedPairs)
             {
@@ -57,7 +70,9 @@
         {
             get
             {
-                return string.Format("{0}{1}{2}", ODataTop, KeyValueDelimiter, this._stringDictionary[ODataTop]);
+                return Top != null
+                    ? string.Format("{0}{1}{2}", ODataTop, KeyValueDelimiter, this._stringDictionary[ODataTop])
+                    : null;
             }
         }
 
@@ -65,7 +80,9 @@
         {
             get
             {
-                return string.Format("{0}{1}{2}", ODataSkip, KeyValueDelimiter, this._stringDictionary[ODataSkip]);
+                return Skip != null
+                    ? string.Format("{0}{1}{2}", ODataSkip, KeyValueDelimiter, this._stringDictionary[ODataSkip])
+                    : null;
             }
         }
 
@@ -73,7 +90,9 @@
         {
             get
             {
-                return string.Format("{0}{1}{2}", ODataOrderBy, KeyValueDelimiter, this._stringDictionary[ODataOrderBy]);
+                return OrderBy != null
+                    ? string.Format("{0}{1}{2}", ODataOrderBy, KeyValueDelimiter, this._stringDictionary[ODataOrderBy])
+                    : null;
             }
         }
 
@@ -81,7 +100,9 @@
         {
             get
             {
-                return string.Format("{0}{1}{2}", ODataFilter, KeyValueDelimiter, this._stringDictionary[ODataFilter]);
+                return Filter != null
+                    ? string.Format("{0}{1}{2}", ODataFilter, KeyValueDelimiter, this._stringDictionary[ODataFilter])
+                    : null;
             }
         }
 
@@ -89,7 +110,9 @@
         {
             get
             {
-                return string.Format("{0}{1}{2}", ODataSelect, KeyValueDelimiter, this._stringDictionary[ODataSelect]);
+                return Select != null
+                    ? string.Format("{0}{1}{2}", ODataSelect, KeyValueDelimiter, this._stringDictionary[ODataSelect])
+                    : null;
             }
         }
 

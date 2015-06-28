@@ -1,6 +1,6 @@
 ﻿namespace TinyOData.Attributes
 {
-    using Extensions;
+    using Extensions.Http;
     using Query;
     using Query.Interfaces;
     using System;
@@ -8,6 +8,10 @@
     using System.Web.Http.Controllers;
     using System.Web.Http.Filters;
 
+    /// <summary>
+    /// Action filter that sets the parsed <see cref="ODataQuery{TEntity}"/> instance
+    /// parameter to the actions that require it
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Method)]
     public class ParseODataQueryAttribute : ActionFilterAttribute
     {

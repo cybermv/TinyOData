@@ -13,13 +13,13 @@
     public class ODataOrderByQuery<TEntity> : ODataBaseQuery, IAppliableQuery<TEntity>
         where TEntity : class, new()
     {
-        private List<OrderByPropertyDirectionPair> _orderByPropertiesList;
+        private readonly List<OrderByPropertyDirectionPair> _orderByPropertiesList;
 
         internal ODataOrderByQuery(QueryString queryString)
         {
             this.EntityType = typeof(TEntity);
             this.RawQuery = queryString.OrderByQuery;
-            this._orderByPropertiesList = ExtractOrderByProperties(queryString.OrderByQuery);
+            this._orderByPropertiesList = ExtractOrderByProperties();
         }
 
         /// <summary>
@@ -37,8 +37,8 @@
             IQueryable queryToReturn = query;
 
             OrderByPropertyDirectionPair firstOrderBy = this._orderByPropertiesList.First();
-            Expression orderByLambda = BuildPropertySelectorLambda(firstOrderBy.PropertyName);
-            Type entityPropertyType = GetEntityPropertyType(firstOrderBy.PropertyName);
+            Expression orderByLambda = BuildPropertySelectorLambda(firstOrderBy.Name);
+            Type entityPropertyType = GetEntityPropertyType(firstOrderBy.Name);
             string orderingFunctionName = GetOrderingFunctionName(firstOrderBy.Direction, 0);
 
             MethodCallExpression orderBy = Expression.Call(
@@ -55,8 +55,8 @@
                 for (int i = 1; i < this._orderByPropertiesList.Count; i++)
                 {
                     OrderByPropertyDirectionPair orderByPair = this._orderByPropertiesList[i];
-                    orderByLambda = BuildPropertySelectorLambda(orderByPair.PropertyName);
-                    entityPropertyType = GetEntityPropertyType(orderByPair.PropertyName);
+                    orderByLambda = BuildPropertySelectorLambda(orderByPair.Name);
+                    entityPropertyType = GetEntityPropertyType(orderByPair.Name);
                     orderingFunctionName = GetOrderingFunctionName(orderByPair.Direction, i);
 
                     orderBy = Expression.Call(
@@ -77,18 +77,22 @@
         /// Parses the $orderby query string section and returns a list of properies
         /// by whom to order the query, along with the ordering direction
         /// </summary>
-        /// <param name="orderByQueryString">The query string section</param>
         /// <returns>An ordered list of <see cref="OrderByPropertyDirectionPair"/> instances</returns>
-        private List<OrderByPropertyDirectionPair> ExtractOrderByProperties(string orderByQueryString)
+        private List<OrderByPropertyDirectionPair> ExtractOrderByProperties()
         {
-            string[] segments = orderByQueryString.Split(QueryString.KeyValueDelimiter);
+            if (this.RawQuery == null)
+            {
+                return null;
+            }
+
+            string[] segments = this.RawQuery.Split(QueryString.KeyValueDelimiter);
 
             if (segments.Length != 2)
             {
                 return null;
             }
 
-            string[] orderByStatements = segments[1].Split(QueryString.OrderByDelimiter);
+            string[] orderByStatements = segments[1].Split(QueryString.PropertyDelimiter);
 
             List<OrderByPropertyDirectionPair> list = new List<OrderByPropertyDirectionPair>();
 
@@ -196,15 +200,15 @@
         /// <summary>
         /// Struct which represents a single ordering pair - the name of the property and the ordering direction
         /// </summary>
-        private struct OrderByPropertyDirectionPair
+        internal struct OrderByPropertyDirectionPair
         {
-            public readonly string PropertyName;
+            public readonly string Name;
 
             public readonly OrderByDirection Direction;
 
             public OrderByPropertyDirectionPair(string propertyName, OrderByDirection direction = OrderByDirection.Ascending)
             {
-                this.PropertyName = propertyName;
+                this.Name = propertyName;
                 this.Direction = direction;
             }
 

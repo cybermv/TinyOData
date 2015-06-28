@@ -33,6 +33,11 @@
         /// <returns>The extracted top number</returns>
         private int? ExtractTopCount()
         {
+            if (this.RawQuery == null)
+            {
+                return null;
+            }
+
             string[] segments = this.RawQuery.Split(QueryString.KeyValueDelimiter);
 
             if (segments.Length != 2)

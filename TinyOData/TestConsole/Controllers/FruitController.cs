@@ -1,37 +1,41 @@
 ﻿namespace TestConsole.Controllers
 {
     using DAL;
-    using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.Configuration;
     using System.Web.Http;
+    using TinyOData.Extensions;
     using TinyOData.Query;
 
     public class FruitController : ApiController
     {
         [Route("api/fruit")]
-        public IHttpActionResult Get(ODataQuery<Fruit> query)
+        public IHttpActionResult Get()
         {
             IQueryable<Fruit> fruits = Fruit.Query;
 
-            fruits = query.ApplyTo(fruits);
+            fruits = fruits.OrderByDescending(f => f.Weight).Skip(3).Take(2);
 
             List<Fruit> queriedFruits = fruits.ToList();
 
             return Ok(queriedFruits);
         }
 
-        [Route("api/dyn")]
-        public IHttpActionResult Get(object obj)
+        [Route("api/fruitquery")]
+        public IHttpActionResult Get(ODataQuery<Fruit> query)
         {
-            dynamic dyn = new
-            {
-                Nick = "CyberMY",
-                Godine = 21,
-                DatumRodjenja = new DateTime(1993, 7, 6)
-            };
+            IQueryable<Fruit> fruits = Fruit.Query;
 
-            return Ok(dyn);
+            IQueryable<dynamic> applied = query.ApplyToAsDynamic(fruits);
+
+            List<dynamic> objects = applied.ToList();
+
+            //fruits = fruits.ApplyODataQuery(query);
+
+            List<Fruit> queriedFruits = fruits.ToList();
+
+            return Ok(objects);
         }
     }
 }

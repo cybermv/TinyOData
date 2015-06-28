@@ -8,6 +8,7 @@ namespace TestConsole
     using System.Net;
     using System.Web.Http;
     using TinyOData.Attributes;
+    using TinyOData.Extensions.Http;
 
     public class Startup
     {
@@ -38,8 +39,7 @@ namespace TestConsole
             HttpConfiguration configuration = new HttpConfiguration();
 
             configuration.MapHttpAttributeRoutes();
-
-            configuration.Filters.Add(new ParseODataQueryAttribute());
+            configuration.RegisterTinyOData();
 
             configuration.Formatters.Remove(configuration.Formatters.XmlFormatter);
             configuration.Formatters.JsonFormatter.Indent = true;

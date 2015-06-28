@@ -19,11 +19,11 @@
         /// <param name="queryString">The query string</param>
         public ODataQuery(QueryString queryString)
         {
-            this.Filter = new ODataFilterQuery<TEntity>();
+            this.Filter = new ODataFilterQuery<TEntity>(queryString);
             this.OrderBy = new ODataOrderByQuery<TEntity>(queryString);
             this.Skip = new ODataSkipQuery<TEntity>(queryString);
             this.Top = new ODataTopQuery<TEntity>(queryString);
-            this.Select = new ODataSelectQuery<TEntity>();
+            this.Select = new ODataSelectQuery<TEntity>(queryString);
         }
 
         /// <summary>

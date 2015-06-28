@@ -1,4 +1,4 @@
-﻿namespace TinyOData.Extensions
+﻿namespace TinyOData.Extensions.Http
 {
     using Query;
     using Query.Interfaces;
