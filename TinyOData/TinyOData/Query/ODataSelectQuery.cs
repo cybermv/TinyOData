@@ -52,7 +52,10 @@
                 return null;
             }
 
-            IEnumerable<string> selectedProperties = segments[1].Split(QueryString.PropertyDelimiter).Distinct();
+            IEnumerable<string> selectedProperties = segments[1]
+                .Split(QueryString.PropertyDelimiter)
+                .Select(p => p.Trim().ToLowerInvariant())
+                .Distinct();
             List<EntityPropertyInformation> selectedPropertiesForCreation = new List<EntityPropertyInformation>();
 
             foreach (string property in selectedProperties)
