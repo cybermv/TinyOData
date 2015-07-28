@@ -12,11 +12,11 @@
         [TestMethod, TestCategory("Queries / OrderBy / Single")]
         public void OrderBySingleCorrect()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$orderby=Id");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -27,11 +27,11 @@
         [TestMethod, TestCategory("Queries / OrderBy / Single")]
         public void OrderBySingleAscending()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$orderby=Id asc");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -42,11 +42,11 @@
         [TestMethod, TestCategory("Queries / OrderBy / Single")]
         public void OrderBySingleDescending()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$orderby=Id desc");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -58,11 +58,11 @@
         [TestMethod, TestCategory("Queries / OrderBy / Single")]
         public void OrderBySingleWithSpaces()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?   $orderby =   Id    desc");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -74,11 +74,11 @@
         [TestMethod, TestCategory("Queries / OrderBy / Single")]
         public void OrderBySingleNonExistingProperty()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$orderby=BadPropertyName");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -90,11 +90,11 @@
         [TestMethod, TestCategory("Queries / OrderBy / Single")]
         public void OrderBySingleBadDirection()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$orderby=Id what");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -106,11 +106,11 @@
         [TestMethod, TestCategory("Queries / OrderBy / Multiple")]
         public void OrderByMultipleCorrect()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$orderby=Color, Price desc");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -122,11 +122,11 @@
         [TestMethod, TestCategory("Queries / OrderBy / Multiple")]
         public void OrderByMultipleWithSpaces()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$orderby  =  Color   ,  Price    desc  ");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -138,11 +138,11 @@
         [TestMethod, TestCategory("Queries / OrderBy / Multiple")]
         public void OrderByMultipleNonExistingProperty()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$orderby=Color, Price desc, IDontExist asc");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 

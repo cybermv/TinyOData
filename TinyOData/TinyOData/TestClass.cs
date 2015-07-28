@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TinyOData
+﻿namespace TinyOData
 {
+    using System;
+    using System.Linq;
     using System.Linq.Expressions;
 
     internal class TestClass

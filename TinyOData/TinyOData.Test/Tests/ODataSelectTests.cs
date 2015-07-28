@@ -13,11 +13,11 @@
         [TestMethod, TestCategory("Queries / Select")]
         public void SelectCorrect()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$select=Name,Price,Available");
 
-            // Test
+            // Act
             IQueryable<dynamic> appliedQuery = odataQuery.ApplyToAsDynamic(baseQueryable);
             List<dynamic> selection = appliedQuery.ToList();
 
@@ -32,11 +32,11 @@
         [TestMethod, TestCategory("Queries / Select")]
         public void SelectWithSpaces()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?  $select  =  Name ,    Price    ,  Available   ");
 
-            // Test
+            // Act
             IQueryable<dynamic> appliedQuery = odataQuery.ApplyToAsDynamic(baseQueryable);
             List<dynamic> selection = appliedQuery.ToList();
 
@@ -51,11 +51,11 @@
         [TestMethod, TestCategory("Queries / Select")]
         public void SelectWrongCasing()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$select=name,PRICE,AvaILAble");
 
-            // Test
+            // Act
             IQueryable<dynamic> appliedQuery = odataQuery.ApplyToAsDynamic(baseQueryable);
             List<dynamic> selection = appliedQuery.ToList();
 
@@ -70,11 +70,11 @@
         [TestMethod, TestCategory("Queries / Select")]
         public void SelectDuplicatedProperty()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$select=Name, Color, Name, Price, coLOR");
 
-            // Test
+            // Act
             IQueryable<dynamic> appliedQuery = odataQuery.ApplyToAsDynamic(baseQueryable);
             List<dynamic> selection = appliedQuery.ToList();
 
@@ -89,11 +89,11 @@
         [TestMethod, TestCategory("Queries / Select")]
         public void SelectNonExistingProperty()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$select=Name,Surname,Available");
 
-            // Test
+            // Act
             IQueryable<dynamic> appliedQuery = odataQuery.ApplyToAsDynamic(baseQueryable);
             List<dynamic> selection = appliedQuery.ToList();
 

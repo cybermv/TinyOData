@@ -6,5 +6,7 @@
     internal interface IODataRawQuery
     {
         string RawQuery { get; }
+
+        bool IsValid { get; }
     }
 }

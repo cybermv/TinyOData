@@ -1,6 +1,7 @@
 ﻿namespace TinyOData.Utility
 {
     using System;
+    using System.Collections.Concurrent;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -8,25 +9,31 @@
     /// Struct which represents data about a entity property; the data is used
     /// in the expression building process
     /// </summary>
-    public class EntityPropertyInformation
+    public class PropertyMetadata
     {
-        public readonly string Name;
-        public readonly Type Type;
-        public readonly PropertyKind Kind;
+        private static readonly ConcurrentDictionary<string, IEnumerable<PropertyMetadata>> CachedMetadata;
 
-        public EntityPropertyInformation(string name, Type type, PropertyKind kind)
+        static PropertyMetadata()
         {
-            this.Name = name;
-            this.Type = type;
-            this.Kind = kind;
+            CachedMetadata = new ConcurrentDictionary<string, IEnumerable<PropertyMetadata>>();
         }
+
+        private PropertyMetadata()
+        {
+        }
+
+        public string Name { get; private set; }
+
+        public Type Type { get; private set; }
+
+        public PropertyKind Kind { get; private set; }
 
         /// <summary>
         /// Creates metadata from a given entity type
         /// </summary>
         /// <typeparam name="TEntity">Type of the entity</typeparam>
-        /// <returns>List of <see cref="EntityPropertyInformation"/> instances</returns>
-        public static IEnumerable<EntityPropertyInformation> FromEntity<TEntity>()
+        /// <returns>List of <see cref="PropertyMetadata"/> instances</returns>
+        public static IEnumerable<PropertyMetadata> FromEntity<TEntity>()
             where TEntity : class, new()
         {
             return FromEntity(typeof(TEntity));
@@ -36,18 +43,25 @@
         /// Creates metadata from a given entity type
         /// </summary>
         /// <param name="entityType">Type of the entity</param>
-        /// <returns>List of <see cref="EntityPropertyInformation"/> instances</returns>
-        public static IEnumerable<EntityPropertyInformation> FromEntity(Type entityType)
+        /// <returns>List of <see cref="PropertyMetadata"/> instances</returns>
+        public static IEnumerable<PropertyMetadata> FromEntity(Type entityType)
+        {
+            return CachedMetadata.GetOrAdd(entityType.Name, _ => CreateMetadata(entityType));
+        }
+
+        private static IEnumerable<PropertyMetadata> CreateMetadata(Type entityType)
         {
             return entityType.GetProperties()
                 .Where(p => p.PropertyType.IsPublic &&
                             (p.PropertyType.IsValueType ||
                              p.PropertyType.IsPrimitive ||
                              p.PropertyType == typeof(string)))
-                .Select(propertyInfo => new EntityPropertyInformation(
-                    propertyInfo.Name,
-                    propertyInfo.PropertyType,
-                    GetKindFromType(propertyInfo.PropertyType)));
+                .Select(p => new PropertyMetadata
+                {
+                    Name = p.Name,
+                    Type = p.PropertyType,
+                    Kind = GetKindFromType(p.PropertyType)
+                });
         }
 
         /// <summary>

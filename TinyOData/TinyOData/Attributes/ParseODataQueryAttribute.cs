@@ -1,5 +1,6 @@
 ﻿namespace TinyOData.Attributes
 {
+    using Extensions;
     using Extensions.Http;
     using Query;
     using Query.Interfaces;
@@ -52,7 +53,7 @@
 
             Type entityType = parameter.ParameterType.GetGenericArguments().Single();
 
-            IODataQuery parsedQuery = actionContext.Request.BuildODataQuery(entityType);
+            IODataQuery parsedQuery = actionContext.Request.RequestUri.ParseODataQuery(entityType);
 
             actionContext.ActionArguments[parameter.ParameterName] = parsedQuery;
         }

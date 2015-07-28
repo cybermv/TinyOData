@@ -75,7 +75,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TestClass.cs" />
-    <Compile Include="Utility\EntityPropertyInformation.cs" />
+    <Compile Include="Utility\PropertyMetadata.cs" />
     <Compile Include="Utility\AnonymousTypeBuilder.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -24,14 +24,10 @@
 
             //EntityPropertyInformation[] arr = new[] { p1, p2 };
 
-            //Type anonType = RuntimeTypeBuilder.CreateType(p1, p2);
-
             //IQueryable<Fruit> source = Fruit.Query;
             //Expression sourceExpr = Fruit.Query.Expression;
 
             //ParameterExpression sourceItem = Expression.Parameter(source.ElementType, "entity");
-
-            //NewExpression newAnonObj = Expression.New(anonType);
 
             //Dictionary<string, PropertyInfo> sourceProperties = arr.ToDictionary(f => f.Name, f => source.ElementType.GetProperty(f.Name));
 
@@ -63,21 +59,27 @@
 
             //string serializeObject = JsonConvert.SerializeObject(objects);
 
-            ////var query = Fruit.Query
-            ////    .Where(f => f.Id > 3)
-            ////    .Select(f => new
-            ////    {
-            ////        Ajdi = f.Id,
-            ////        Ime = f.Name
-            ////    });
+            //var query = Fruit.Query
+            //    .Where(f => f.Id > 3)
+            //    .Select(f => new
+            //    {
+            //        Ajdi = f.Id,
+            //        Ime = f.Name
+            //    });
 
             //ParameterExpression param = Expression.Parameter(typeof(Fruit), "f");
 
-            ////NewExpression newMyShit = Expression.New(typeof(MyShit));
+            //NewExpression newMyShit = Expression.New(typeof(MyShit));
 
             //BinaryExpression assign = Expression.Assign(Expression.Constant(12), Expression.Constant(3));
 
-            //query.Expression.Visualize();
+            IQueryable<Fruit> queryable = Fruit.Query.Where(f =>
+                f.Id > 5 ||
+                f.Weight > 30 ||
+                f.Name == "Ivo" ||
+                f.Name == "Pero");
+
+            queryable.Expression.Visualize();
 
             StartWebServer();
         }

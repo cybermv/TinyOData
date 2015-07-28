@@ -3,7 +3,9 @@
     using Interfaces;
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.Eventing.Reader;
     using System.Linq;
+    using System.Linq.Expressions;
     using Utility;
 
     /// <summary>
@@ -13,13 +15,35 @@
     public class ODataFilterQuery<TEntity> : ODataBaseQuery, IAppliableQuery<TEntity>
         where TEntity : class, new()
     {
-        private readonly IEnumerable<EntityPropertyInformation> _propertyInfos;
+        private readonly IEnumerable<PropertyMetadata> _propertyMetadata;
+
+        private Expression _filteringLambda;
 
         internal ODataFilterQuery(QueryString queryString)
         {
             this.EntityType = typeof(TEntity);
             this.RawQuery = queryString.FilterQuery;
-            this._propertyInfos = EntityPropertyInformation.FromEntity<TEntity>();
+            this._propertyMetadata = PropertyMetadata.FromEntity<TEntity>();
+            //BuildFilteringLambda();
+        }
+
+        private void BuildFilteringLambda()
+        {
+            ParameterExpression parameter = Expression.Parameter(EntityType, "entity");
+
+            MemberExpression prviProp = Expression.Property(parameter, "Prvi");
+
+            BinaryExpression prviJe42 = Expression.Equal(prviProp, Expression.Constant(42));
+
+            MemberExpression drugiProp = Expression.Property(parameter, "Drugi");
+
+            BinaryExpression drugiJeVeciOd13 = Expression.GreaterThan(drugiProp, Expression.Constant(13));
+
+            BinaryExpression tijelo = Expression.OrElse(prviJe42, drugiJeVeciOd13);
+
+            LambdaExpression lambda = Expression.Lambda(tijelo, parameter);
+
+            this._filteringLambda = lambda;
         }
 
         /// <summary>
@@ -45,7 +69,7 @@
                 throw new NotImplementedException("Use of parenthesis is not yet supported!");
             }
 
-            IEnumerable<EntityPropertyInformation> entityPropertyInformations = this._propertyInfos;
+            IEnumerable<PropertyMetadata> entityPropertyInformations = this._propertyMetadata;
         }
 
         #region IAppliableQuery

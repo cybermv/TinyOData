@@ -1,32 +1,52 @@
 ﻿namespace TinyOData.Extensions
 {
+    using System;
+
     /// <summary>
     /// String extensions that simplify the query parsing process
     /// </summary>
     public static class StringExtensions
     {
         /// <summary>
-        /// Replaces all multiple spaces with a single space
+        /// Trims the string start and end and replaces all multiple spaces
+        /// occurring in the given string  with a single space
         /// </summary>
         /// <param name="toClean">The string to clean up</param>
         /// <returns>The cleaned string</returns>
         public static string TrimInner(this string toClean)
         {
-            char[] chars = toClean.ToCharArray();
+            if (toClean == null)
+            {
+                return null;
+            }
+
+            char[] chars = toClean.Trim().ToCharArray();
+
+            if (chars.Length < 1)
+            {
+                return string.Empty;
+            }
+
             char[] cleaned = new char[chars.Length];
             const char spaceChar = ' ';
-            cleaned[0] = spaceChar;
-            int cleanedUpLength = 1;
+            int newLength = 0;
+            cleaned[newLength++] = chars[0];
 
-            for (int i = 0; i < chars.Length; i++)
+            for (int idx = 1; idx < chars.Length; idx++)
             {
-                if (cleaned[cleanedUpLength - 1] == spaceChar && chars[i] == spaceChar)
+                if (cleaned[newLength - 1] == spaceChar && chars[idx] == spaceChar)
                 {
                     continue;
                 }
-                cleaned[cleanedUpLength++] = chars[i];
+                cleaned[newLength++] = chars[idx];
             }
-            return new string(cleaned, 0, cleanedUpLength).Trim();
+
+            return new string(cleaned, 0, newLength);
+        }
+
+        public static string[] Split(this string toSplit, string[] segments, StringSplitOptions options)
+        {
+            return new string[0];
         }
     }
 }

@@ -15,15 +15,15 @@
     public class ODataSelectQuery<TEntity> : ODataBaseQuery, IDynamicAppliableQuery<TEntity>
         where TEntity : class, new()
     {
-        private readonly IEnumerable<EntityPropertyInformation> _entityPropertyInfos;
-        private readonly List<EntityPropertyInformation> _selectionPropertyInfos;
+        private readonly IEnumerable<PropertyMetadata> _entityPropertyInfos;
+        private readonly List<PropertyMetadata> _selectionPropertyInfos;
         private readonly Type _selectionType;
 
         internal ODataSelectQuery(QueryString queryString)
         {
             this.RawQuery = queryString.SelectQuery;
             this.EntityType = typeof(TEntity);
-            this._entityPropertyInfos = EntityPropertyInformation.FromEntity<TEntity>();
+            this._entityPropertyInfos = PropertyMetadata.FromEntity<TEntity>();
             this._selectionPropertyInfos = ParseSelectionProperties();
             this._selectionType = CreateSelectionType();
 
@@ -34,11 +34,11 @@
         }
 
         /// <summary>
-        /// Parses the OData $select query into a list of <see cref="EntityPropertyInformation"/>
+        /// Parses the OData $select query into a list of <see cref="PropertyMetadata"/>
         /// instances that will be used to make the selection and create the resulting type
         /// </summary>
-        /// <returns>List of <see cref="EntityPropertyInformation"/> instances</returns>
-        private List<EntityPropertyInformation> ParseSelectionProperties()
+        /// <returns>List of <see cref="PropertyMetadata"/> instances</returns>
+        private List<PropertyMetadata> ParseSelectionProperties()
         {
             if (this.RawQuery == null)
             {
@@ -56,11 +56,11 @@
                 .Split(QueryString.PropertyDelimiter)
                 .Select(p => p.Trim().ToLowerInvariant())
                 .Distinct();
-            List<EntityPropertyInformation> selectedPropertiesForCreation = new List<EntityPropertyInformation>();
+            List<PropertyMetadata> selectedPropertiesForCreation = new List<PropertyMetadata>();
 
             foreach (string property in selectedProperties)
             {
-                EntityPropertyInformation propInfo = this._entityPropertyInfos
+                PropertyMetadata propInfo = this._entityPropertyInfos
                     .SingleOrDefault(p => p.Name.Equals(property, StringComparison.OrdinalIgnoreCase));
 
                 if (propInfo == null)
@@ -79,7 +79,9 @@
         /// <returns>The selection type</returns>
         private Type CreateSelectionType()
         {
-            return this._selectionPropertyInfos != null ? AnonymousTypeBuilder.From(this._selectionPropertyInfos) : null;
+            return this._selectionPropertyInfos != null
+                ? AnonymousTypeBuilder.From(this._selectionPropertyInfos.ToArray())
+                : null;
         }
 
         private IQueryable<dynamic> ApplyInternal(IQueryable<TEntity> query)
@@ -91,7 +93,7 @@
 
             List<MemberAssignment> assignments = new List<MemberAssignment>();
 
-            foreach (EntityPropertyInformation property in this._selectionPropertyInfos)
+            foreach (PropertyMetadata property in this._selectionPropertyInfos)
             {
                 MemberExpression selectedProp = Expression.Property(entity, property.Name);
                 MemberAssignment assignment = Expression.Bind(selectionFields[property.Name], selectedProp);

@@ -6,6 +6,7 @@
 
     /// <summary>
     /// Class that represents the parsed query string with properties used to access
+    /// parts of the query string
     /// </summary>
     public class QueryString
     {

@@ -12,11 +12,11 @@
         [TestMethod, TestCategory("Queries / Top")]
         public void TopQueryCorrect()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$top=5");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -27,11 +27,11 @@
         [TestMethod, TestCategory("Queries / Top")]
         public void TopQueryWithSpaces()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("? $top =   5 ");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -42,11 +42,11 @@
         [TestMethod, TestCategory("Queries / Top")]
         public void TopQueryNotNumber()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$top=blabla");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -58,11 +58,11 @@
         [TestMethod, TestCategory("Queries / Top")]
         public void TopQueryNegativeNumber()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$top=-42");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -74,11 +74,11 @@
         [TestMethod, TestCategory("Queries / Top")]
         public void TopQueryHigherThanCount()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$top=1000000");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -90,11 +90,11 @@
         [TestMethod, TestCategory("Queries / Top")]
         public void TopQueryMistyped()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$tops=5");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 

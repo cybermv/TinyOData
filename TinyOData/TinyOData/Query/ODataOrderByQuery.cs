@@ -155,9 +155,9 @@
         {
             ParameterExpression entity = Expression.Parameter(this.EntityType, "entity");
 
-            MemberExpression firstPropertyToOrder = Expression.Property(entity, propertyName);
+            MemberExpression propertyToOrder = Expression.Property(entity, propertyName);
 
-            return Expression.Lambda(firstPropertyToOrder, entity);
+            return Expression.Lambda(propertyToOrder, entity);
         }
 
         /// <summary>

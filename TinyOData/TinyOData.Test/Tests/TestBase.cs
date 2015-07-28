@@ -20,7 +20,10 @@
         /// <returns>An <see cref="IQueryable{Product}"/> instance</returns>
         protected IQueryable<Product> GetDatabaseQueryable()
         {
-            this._context = new ProductsDbContext();
+            if (this._context == null)
+            {
+                this._context = new ProductsDbContext();
+            }
             return this._context.Products;
         }
 

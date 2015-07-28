@@ -12,11 +12,11 @@
         [TestMethod, TestCategory("Queries / Skip / Local")]
         public void SkipQueryLocalCorrect()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetLocalQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$skip=5");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -28,11 +28,11 @@
         [TestMethod, TestCategory("Queries / Skip / Local")]
         public void SkipQueryLocalWithSpaces()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetLocalQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?  $skip   =   5  ");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -44,11 +44,11 @@
         [TestMethod, TestCategory("Queries / Skip / Local")]
         public void SkipQueryLocalNotNumber()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetLocalQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$skip=NAN");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -60,11 +60,11 @@
         [TestMethod, TestCategory("Queries / Skip / Local")]
         public void SkipQueryLocalNegativeNumber()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetLocalQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$skip=-5");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -76,11 +76,11 @@
         [TestMethod, TestCategory("Queries / Skip / Local")]
         public void SkipQueryLocalHigherThanCount()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetLocalQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$skip=55555");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -91,11 +91,11 @@
         [TestMethod, TestCategory("Queries / Skip / Local")]
         public void SkipQueryLocalMistyped()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetLocalQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$skeep=5");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -107,11 +107,11 @@
         [TestMethod, TestCategory("Queries / Skip / EF")]
         public void SkipQueryOnEFCorrect()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$orderby=Id & $skip=5");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -123,11 +123,11 @@
         [TestMethod, TestCategory("Queries / Skip / EF")]
         public void SkipQueryOnEFWithSpaces()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$orderby=Id &   $skip   =   5  ");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -139,11 +139,11 @@
         [TestMethod, TestCategory("Queries / Skip / EF")]
         public void SkipQueryOnEFNotNumber()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$orderby=Id & $skip=NAN");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -155,11 +155,11 @@
         [TestMethod, TestCategory("Queries / Skip / EF")]
         public void SkipQueryOnEFNegativeNumber()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$orderby=Id & $skip=-5");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -171,11 +171,11 @@
         [TestMethod, TestCategory("Queries / Skip / EF")]
         public void SkipQueryOnEFHigherThanCount()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$orderby=Id & $skip=55555");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 
@@ -186,11 +186,11 @@
         [TestMethod, TestCategory("Queries / Skip / EF")]
         public void SkipQueryOnEFMistyped()
         {
-            // Prepare
+            // Arrange
             IQueryable<Product> baseQueryable = GetDatabaseQueryable();
             ODataQuery<Product> odataQuery = CreateQuery("?$orderby=Id & $skeep=5");
 
-            // Test
+            // Act
             IQueryable<Product> appliedQuery = odataQuery.ApplyTo(baseQueryable);
             List<Product> finalList = appliedQuery.ToList();
 

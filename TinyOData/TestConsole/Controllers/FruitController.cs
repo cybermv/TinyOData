@@ -6,6 +6,7 @@
     using System.Net.Configuration;
     using System.Web.Http;
     using TinyOData.Extensions;
+    using TinyOData.Extensions.Http;
     using TinyOData.Query;
 
     public class FruitController : ApiController
@@ -14,6 +15,8 @@
         public IHttpActionResult Get()
         {
             IQueryable<Fruit> fruits = Fruit.Query;
+
+            ODataQuery<Fruit> query = this.Request.ParseODataQuery<Fruit>();
 
             fruits = fruits.OrderByDescending(f => f.Weight).Skip(3).Take(2);
 

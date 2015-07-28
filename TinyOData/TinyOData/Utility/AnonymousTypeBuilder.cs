@@ -31,7 +31,7 @@
         /// </summary>
         /// <param name="properties">The properties to add to the type</param>
         /// <returns>The created type</returns>
-        public static Type From(List<EntityPropertyInformation> properties)
+        public static Type From(params PropertyMetadata[] properties)
         {
             if (properties == null || !properties.Any())
             {
@@ -49,12 +49,12 @@
         /// <param name="typeName">Name of the new type</param>
         /// <param name="properties">The properties of the created runtime type</param>
         /// <returns>The created type</returns>
-        private static Type CreateType(string typeName, IEnumerable<EntityPropertyInformation> properties)
+        private static Type CreateType(string typeName, IEnumerable<PropertyMetadata> properties)
         {
             TypeBuilder typeBuilder = ModuleBuilder.DefineType(typeName,
                 TypeAttributes.Public | TypeAttributes.Class | TypeAttributes.Serializable);
 
-            foreach (EntityPropertyInformation property in properties)
+            foreach (PropertyMetadata property in properties)
             {
                 typeBuilder.DefineField(property.Name, property.Type, FieldAttributes.Public);
             }
