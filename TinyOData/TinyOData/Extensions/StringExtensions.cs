@@ -29,18 +29,24 @@
 
             char[] cleaned = new char[chars.Length];
             const char spaceChar = ' ';
+            const char stringMark = '\'';
             int newLength = 0;
+            bool isInsideString = false;
             cleaned[newLength++] = chars[0];
 
             for (int idx = 1; idx < chars.Length; idx++)
             {
-                if (cleaned[newLength - 1] == spaceChar && chars[idx] == spaceChar)
+                if (cleaned[newLength - 1] == spaceChar && chars[idx] == spaceChar && !isInsideString)
                 {
                     continue;
                 }
                 cleaned[newLength++] = chars[idx];
+                if (chars[idx] == stringMark)
+                {
+                    isInsideString = !isInsideString;
+                }
             }
-
+            
             return new string(cleaned, 0, newLength);
         }
 

@@ -13,6 +13,9 @@
     {
         private Expression _topExpr;
 
+        /// <summary>
+        /// Gets the top count from the query; returns null if the query is invalid
+        /// </summary>
         public int? TopCount { get; private set; }
 
         internal ODataTopQuery(QueryString queryString)

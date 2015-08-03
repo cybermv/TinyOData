@@ -54,6 +54,13 @@
     <Compile Include="Extensions\QueryableExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\UriExtensions.cs" />
+    <Compile Include="Query\Filter\Constants.cs" />
+    <Compile Include="Query\Filter\Segments\FilterSegments.cs" />
+    <Compile Include="Query\Filter\Segments\LogicSegments.cs" />
+    <Compile Include="Query\Filter\Segments\SegmentBase.cs" />
+    <Compile Include="Query\Filter\Tokens\FilterTokens.cs" />
+    <Compile Include="Query\Filter\Tokens\Token.cs" />
+    <Compile Include="Query\Filter\Tokens\TokenKind.cs" />
     <Compile Include="Query\Interfaces\IAppliableQuery.cs" />
     <Compile Include="Query\Interfaces\IDynamicAppliableQuery.cs" />
     <Compile Include="Query\ODataBaseQuery.cs" />

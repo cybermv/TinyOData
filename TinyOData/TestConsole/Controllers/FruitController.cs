@@ -1,6 +1,7 @@
 ﻿namespace TestConsole.Controllers
 {
     using DAL;
+    using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
     using System.Net.Configuration;
@@ -18,11 +19,11 @@
 
             ODataQuery<Fruit> query = this.Request.ParseODataQuery<Fruit>();
 
-            fruits = fruits.OrderByDescending(f => f.Weight).Skip(3).Take(2);
+            //fruits = fruits.OrderByDescending(f => f.Weight).Skip(3).Take(2);
 
-            List<Fruit> queriedFruits = fruits.ToList();
+            //List<Fruit> queriedFruits = fruits.ToList();
 
-            return Ok(queriedFruits);
+            return Ok(fruits.ApplyODataQuery(query).ToList());
         }
 
         [Route("api/fruitquery")]

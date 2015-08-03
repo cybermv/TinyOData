@@ -8,7 +8,7 @@
     /// options on the given <see cref="IQueryable{TEntity}"/>
     /// </summary>
     /// <typeparam name="TEntity">Type of the entity from the query</typeparam>
-    public class ODataQuery<TEntity> : IODataQuery<TEntity>
+    public sealed class ODataQuery<TEntity> : IODataQuery<TEntity>
         where TEntity : class, new()
     {
         /// <summary>
@@ -35,28 +35,16 @@
         public IQueryable<TEntity> ApplyTo(IQueryable<TEntity> query)
         {
             // 1. Filter
-            if (this.Filter != null)
-            {
-                query = this.Filter.ApplyTo(query);
-            }
+            query = this.Filter.ApplyTo(query);
 
             // 2. OrderBy
-            if (this.OrderBy != null)
-            {
-                query = this.OrderBy.ApplyTo(query);
-            }
+            query = this.OrderBy.ApplyTo(query);
 
             // 3. Skip
-            if (this.Skip != null)
-            {
-                query = this.Skip.ApplyTo(query);
-            }
+            query = this.Skip.ApplyTo(query);
 
             // 4. Top
-            if (this.Top != null)
-            {
-                query = this.Top.ApplyTo(query);
-            }
+            query = this.Top.ApplyTo(query);
 
             return query;
         }
@@ -72,12 +60,7 @@
             query = this.ApplyTo(query);
 
             // 5. Select
-            if (this.Select != null)
-            {
-                return this.Select.ApplyToAsDynamic(query);
-            }
-
-            return query;
+            return this.Select.ApplyToAsDynamic(query);
         }
 
         /// <summary>

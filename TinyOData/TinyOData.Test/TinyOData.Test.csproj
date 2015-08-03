@@ -65,7 +65,8 @@
       <DependentUpon>201506251333589_Initial.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Tests\ExtensionsTest.cs" />
+    <Compile Include="Tests\ExtensionsTests.cs" />
+    <Compile Include="Tests\GeneralTests.cs" />
     <Compile Include="Tests\ODataOrderByQueryTests.cs" />
     <Compile Include="Tests\ODataSelectTests.cs" />
     <Compile Include="Tests\ODataSkipQueryTests.cs" />

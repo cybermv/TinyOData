@@ -4,19 +4,32 @@
     using Microsoft.VisualStudio.TestTools.UnitTesting;
 
     [TestClass]
-    public class ExtensionsTest : TestBase
+    public class ExtensionsTests : TestBase
     {
         [TestMethod, TestCategory("Extensions / TrimInner")]
         public void TrimInnerCorrect()
         {
             // Arrange
-            const string toTrim = "   Ovo je    neki string      sa    previše    razmaka      !";
+            const string toTrim = "   This string    has   a      lot of   spaces  !  ";
 
             // Act
             string trimmed = toTrim.TrimInner();
 
             // Assert
-            Assert.AreEqual("Ovo je neki string sa previše razmaka !", trimmed);
+            Assert.AreEqual("This string has a lot of spaces !", trimmed);
+        }
+
+        [TestMethod, TestCategory("Extensions / TrimInner")]
+        public void TrimInnerWithInnerString()
+        {
+            // Arrange
+            const string toTrim = "   Spaces  inside   the ticks  must   'remain   the      same'   !  ";
+
+            // Act
+            string trimmed = toTrim.TrimInner();
+
+            // Assert
+            Assert.AreEqual("Spaces inside the ticks must 'remain   the      same' !", trimmed);
         }
 
         [TestMethod, TestCategory("Extensions / TrimInner")]

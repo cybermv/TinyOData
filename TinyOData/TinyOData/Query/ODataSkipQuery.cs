@@ -13,6 +13,9 @@
     {
         private Expression _skipExpr;
 
+        /// <summary>
+        /// Gets the skip count from the query; returns null if the query is invalid
+        /// </summary>
         public int? SkipCount { get; private set; }
 
         internal ODataSkipQuery(QueryString queryString)
