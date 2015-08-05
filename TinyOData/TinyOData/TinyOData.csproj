@@ -59,8 +59,8 @@
     <Compile Include="Query\Filter\Segments\FilterSegments.cs" />
     <Compile Include="Query\Filter\Segments\LogicSegments.cs" />
     <Compile Include="Query\Filter\Segments\SegmentBase.cs" />
-    <Compile Include="Query\Filter\Tokens\TokenCollection.cs" />
     <Compile Include="Query\Filter\Tokens\Token.cs" />
+    <Compile Include="Query\Filter\Tokens\TokenCollection.cs" />
     <Compile Include="Query\Filter\Tokens\Tokenizer.cs" />
     <Compile Include="Query\Filter\Tokens\TokenKind.cs" />
     <Compile Include="Query\Interfaces\IAppliableQuery.cs" />
