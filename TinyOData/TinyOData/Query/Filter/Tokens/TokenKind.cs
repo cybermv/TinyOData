@@ -1,5 +1,8 @@
 ﻿namespace TinyOData.Query.Filter.Tokens
 {
+    /// <summary>
+    /// Enum of all token kinds that can occur within a $filter query
+    /// </summary>
     public enum TokenKind
     {
         /// <summary>
@@ -48,6 +51,11 @@
         /// <summary>
         /// The right parenthesis ')'
         /// </summary>
-        RightParenthesis
+        RightParenthesis,
+
+        /// <summary>
+        /// The comma used to separate function call parameters ','
+        /// </summary>
+        Comma
     }
 }

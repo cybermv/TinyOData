@@ -23,13 +23,13 @@
         public void TrimInnerWithInnerString()
         {
             // Arrange
-            const string toTrim = "   Spaces  inside   the ticks  must   'remain   the      same'   !  ";
+            const string toTrim = "   Spaces  inside   the quotes  must   'remain   the      same'   !  ";
 
             // Act
             string trimmed = toTrim.TrimInner();
 
             // Assert
-            Assert.AreEqual("Spaces inside the ticks must 'remain   the      same' !", trimmed);
+            Assert.AreEqual("Spaces inside the quotes must 'remain   the      same' !", trimmed);
         }
 
         [TestMethod, TestCategory("Extensions / TrimInner")]

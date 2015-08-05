@@ -1,7 +1,5 @@
 ﻿namespace TinyOData.Query
 {
-    using Extensions;
-    using Filter.Tokens;
     using Interfaces;
     using System.Linq;
     using System.Linq.Expressions;
@@ -32,10 +30,10 @@
             if (rawFilterString == null) { return; }
 
             // adjust spaces in query
-            string filterString = AdjustWhitespace(rawFilterString);
+            //string filterString = AdjustWhitespace(rawFilterString);
 
             // tokenize query
-            TokenCollection tokens = new TokenCollection(filterString, this.EntityType);
+            //TokenCollection tokens = new TokenCollection(filterString, this.EntityType);
 
             // make a segment collection
 
@@ -70,20 +68,7 @@
             return segments.Length == 2 ? segments[1].Trim() : null;
         }
 
-        /// <summary>
-        /// Adjusts the whitespace in the filtering string so that the
-        /// filter string can be easily tokenized
-        /// </summary>
-        /// <param name="rawFilter">The raw string filter</param>
-        /// <returns>The string filter with adjusted whitespace</returns>
-        private string AdjustWhitespace(string rawFilter)
-        {
-            return rawFilter
-                .Replace("(", " ( ")
-                .Replace(")", " ) ")
-                .Replace(",", " , ")
-                .TrimInner();
-        }
+
 
         private IQueryable<TEntity> ApplyInternal(IQueryable<TEntity> query)
         {
@@ -114,24 +99,5 @@
         }
 
         #endregion IAppliableQuery
-
-        #region test only
-
-        public ODataFilterQuery(string rawQuery)
-        {
-            this.RawQuery = rawQuery;
-        }
-
-        public string TestGetRawFilterString()
-        {
-            return GetRawFilterString();
-        }
-
-        public string TestAdjustWhitespace(string rawFilter)
-        {
-            return AdjustWhitespace(rawFilter);
-        }
-
-        #endregion test only
     }
 }

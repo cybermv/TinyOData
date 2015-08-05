@@ -15,8 +15,6 @@
 
         public TokenKind Kind { get; private set; }
 
-        private readonly IEnumerable<PropertyMetadata> _propertyMetadata;
-
         /// <summary>
         /// Instatiates a new <see cref="Token"/> and determines it's kind from
         /// the value and given entity type
@@ -26,18 +24,17 @@
         public Token(string value, Type entityType)
         {
             this.Value = value;
-            this._propertyMetadata = PropertyMetadata.FromEntity(entityType);
-            this.Kind = DetermineKind();
+            this.Kind = DetermineKind(entityType);
         }
 
         /// <summary>
         /// Determines a kind for the token using the given entity type
         /// </summary>
         /// <returns>Kind of the token</returns>
-        private TokenKind DetermineKind()
+        private TokenKind DetermineKind(Type entityType)
         {
             // is it a property?
-            if (this._propertyMetadata.Any(p => string.Equals(p.Name, this.Value, StringComparison.OrdinalIgnoreCase)))
+            if (PropertyMetadata.FromEntity(entityType).Any(p => string.Equals(p.Name, this.Value, StringComparison.OrdinalIgnoreCase)))
             {
                 return TokenKind.PropertyAccessor;
             }
@@ -67,14 +64,22 @@
                 return TokenKind.LogicOperator;
             }
 
+            // is it a left parenthesis?
             if (this.Value == "(")
             {
                 return TokenKind.LeftParenthesis;
             }
 
+            // is it a right parenthesis?
             if (this.Value == ")")
             {
                 return TokenKind.RightParenthesis;
+            }
+
+            // is it a comma?
+            if (this.Value == ",")
+            {
+                return TokenKind.Comma;
             }
 
             // is it a literal value?
@@ -87,6 +92,14 @@
             }
 
             return TokenKind.Unknown;
+        }
+
+        /// <summary>
+        /// ToString override to show logical token description
+        /// </summary>
+        public override string ToString()
+        {
+            return string.Format("{0} - {1}", Kind, Value);
         }
     }
 }
