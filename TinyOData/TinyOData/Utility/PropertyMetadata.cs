@@ -6,7 +6,7 @@
     using System.Linq;
 
     /// <summary>
-    /// Struct which represents data about a entity property; the data is used
+    /// Class which represents data about a entity property; the data is used
     /// in the expression building process
     /// </summary>
     public class PropertyMetadata

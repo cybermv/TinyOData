@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using Exceptions;
     using Extensions;
 
     /// <summary>
@@ -113,8 +114,7 @@
                 }
             };
         }
-
-
+        
         /// <summary>
         /// Extracts the tokens from the raw $filter string and parses them into a <see cref="TokenCollection"/>
         /// Before returning the <see cref="TokenCollection"/> it's ensured that there are no unknown tokens
@@ -127,7 +127,6 @@
         {
             return Tokenize(rawFilterString, typeof(TEntity));
         }
-
 
         /// <summary>
         /// Extracts the tokens from the raw $filter string and parses them into a <see cref="TokenCollection"/>
@@ -247,8 +246,16 @@
             IEnumerable<Token> unknownTokens = tokenCollection.Where(t => t.Kind == TokenKind.Unknown).ToList();
             if (unknownTokens.Any())
             {
-                // TODO baciti normalan exception sa svim unknown tokenima
-                throw new Exception("Unknown tokens found! " + string.Join(", ", unknownTokens.Select(t => t.Value)));
+                if (ODataConfiguration.ErrorBehaviour == QueryErrorBehaviour.ThrowException)
+                {
+
+                    throw new QueryParseException(string.Format("Unknown tokens found in the $filter query= {0}",
+                        string.Join(", ", unknownTokens.Select(t => t.Value))));
+                }
+                else
+                {
+                    tokenCollection.UnderlyingList.Clear();
+                }
             }
         }
 

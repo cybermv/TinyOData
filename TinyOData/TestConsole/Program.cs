@@ -79,7 +79,7 @@
                 f.Name == "Ivo" ||
                 f.Name == "Pero");
 
-            queryable.Expression.Visualize();
+            //queryable.Expression.Visualize();
 
             StartWebServer();
         }

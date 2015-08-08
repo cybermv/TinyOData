@@ -58,7 +58,7 @@
         }
 
         /// <summary>
-        /// The interal method that creates the expression and appends it to the given query
+        /// The internal method that creates the expression and appends it to the given query
         /// </summary>
         /// <param name="query">The query</param>
         /// <returns>The modified query</returns>

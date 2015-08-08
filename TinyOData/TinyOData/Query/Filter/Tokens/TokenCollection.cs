@@ -10,6 +10,8 @@
     {
         private readonly List<Token> _tokens;
 
+        public static readonly TokenCollection Empty = new TokenCollection();
+
         /// <summary>
         /// Instatiates a new <see cref="TokenCollection"/> with no tokens inside
         /// </summary>

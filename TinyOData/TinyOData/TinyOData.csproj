@@ -49,13 +49,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\ParseODataQueryAttribute.cs" />
+    <Compile Include="Exceptions\QueryParseException.cs" />
     <Compile Include="Exceptions\TinyODataApplyException.cs" />
     <Compile Include="Extensions\Http\HttpConfigurationExtensions.cs" />
     <Compile Include="Extensions\Http\HttpRequestMessageExtensions.cs" />
     <Compile Include="Extensions\QueryableExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Extensions\UriExtensions.cs" />
+    <Compile Include="ODataConfiguration.cs" />
     <Compile Include="Query\Filter\Constants.cs" />
+    <Compile Include="Query\Filter\ExpressionBuilder.cs" />
     <Compile Include="Query\Filter\Segments\FilterSegments.cs" />
     <Compile Include="Query\Filter\Segments\LogicSegments.cs" />
     <Compile Include="Query\Filter\Segments\SegmentBase.cs" />
@@ -83,7 +86,6 @@
     <Compile Include="Query\ODataTopQuery.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="TestClass.cs" />
     <Compile Include="Utility\PropertyMetadata.cs" />
     <Compile Include="Utility\AnonymousTypeBuilder.cs" />
   </ItemGroup>
